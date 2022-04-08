@@ -47,6 +47,17 @@ class PythonRunner(Runner):
     def execute(self, stdin):
         return Popen(['python', self.file_name], stdout=PIPE, stdin=stdin, stderr=PIPE).communicate()
 
+class CppRunner(Runner):
+    def init(self):
+        file_without_extension = os.path.splitext(file)[0]
+        self.cleaned = file_without_extension.split('\\')[-1].split('/')[-1]
+
+    def compile(self):
+        return Popen(['gcc', '-o', f'./build/{self.cleaned}', self.file_name]).communicate()
+
+    def execute(self, stdin):
+        return Popen([f'./build/{self.cleaned}'], stdout=PIPE, stdin=stdin, stderr=PIPE).communicate()
+
 def run_test(runner: Runner, inp):
     start_time = time.time_ns()
     out, err = runner.execute(inp)
@@ -71,6 +82,8 @@ if __name__ == '__main__':
         runner = JavaRunner(file)
     elif extension == '.py':
         runner = PythonRunner(file)
+    elif extension == '.cpp' or extension == '.c':
+        runner = CppRunner(file)
     else:
         print(f'Unknown file extension {extension}')
         sys.exit()
@@ -129,3 +142,4 @@ if __name__ == '__main__':
     print(Fore.GREEN + f'{passes} PASS' + Fore.RESET)
     print(Fore.RED + f'{fails} FAIL' + Fore.RESET)
     print(Fore.BLUE + f'{neutrals} NEUTRAL' + Fore.RESET)
+    
