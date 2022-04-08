@@ -5,7 +5,14 @@ import os
 import sys
 import argparse
 from subprocess import Popen, PIPE
-from colorama import Fore
+
+class Fore:
+    MAGENTA = "\u001b[35;1m"
+    CYAN = "\u001b[36;1m"
+    RED = "\u001b[31;1m"
+    GREEN = "\u001b[32;1m"
+    BLUE = "\u001b[34;1m"
+    RESET = "\u001b[0m"
 
 JAVA_PATH = '/Users/ollie/.sdkman/candidates/java/11.0.14-zulu/bin'
 JAVA_C = f'{JAVA_PATH}/javac'
@@ -92,7 +99,6 @@ if __name__ == '__main__':
             in_files = [file for file in os.listdir(case_dir) if file.endswith('.in')]
             out_files = [file for file in os.listdir(case_dir) if file.endswith('.ans')]
             if len(in_files) > 0:
-                print(f'Running Test {ioname}')
                 output, error, duration = run_test(runner, open(os.path.join(case_dir, in_files[0]), 'r'))
                 print_output = True
                 if len(out_files) > 0:
@@ -108,7 +114,7 @@ if __name__ == '__main__':
                         print(repr(expected))
                         fails += 1
                 else:
-                    print(Fore.LIGHTBLUE_EX + f'TEST {ioname}' + Fore.RESET)
+                    print(Fore.BLUE + f'TEST {ioname}' + Fore.RESET)
                     neutrals += 1
                 if print_output:
                     if output:
@@ -122,4 +128,4 @@ if __name__ == '__main__':
                 print(Fore.MAGENTA + f'Ran in {duration}ms\n' + Fore.RESET)
     print(Fore.GREEN + f'{passes} PASS' + Fore.RESET)
     print(Fore.RED + f'{fails} FAIL' + Fore.RESET)
-    print(Fore.LIGHTBLUE_EX + f'{neutrals} NEUTRAL' + Fore.RESET)
+    print(Fore.BLUE + f'{neutrals} NEUTRAL' + Fore.RESET)
